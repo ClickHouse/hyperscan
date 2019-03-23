@@ -5,7 +5,8 @@ set (HS_MAJOR_VERSION 5)
 set (HS_MINOR_VERSION 3)
 set (HS_PATCH_VERSION 0)
 set (HS_VERSION ${HS_MAJOR_VERSION}.${HS_MINOR_VERSION}.${HS_PATCH_VERSION})
-
+set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -march=corei7")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=corei7")
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
@@ -73,7 +74,7 @@ include (${CMAKE_MODULE_PATH}/boost.cmake)
 
 # -- make this work? set(python_ADDITIONAL_VERSIONS 2.7 2.6)
 find_package(PythonInterp)
-find_program(RAGEL ragel)
+# find_program(RAGEL ragel)
 
 if(PYTHONINTERP_FOUND)
     set(PYTHON ${PYTHON_EXECUTABLE})
@@ -93,9 +94,9 @@ endif ()
 message(STATUS "Build date: ${BUILD_DATE}")
 
 
-if(${RAGEL} STREQUAL "RAGEL-NOTFOUND")
-    message(FATAL_ERROR "Ragel state machine compiler not found")
-endif()
+# if(${RAGEL} STREQUAL "RAGEL-NOTFOUND")
+#    message(FATAL_ERROR "Ragel state machine compiler not found")
+# endif()
 
 option(OPTIMISE "Turns off compiler optimizations (on by default unless debug output enabled or coverage testing)" TRUE)
 
@@ -254,11 +255,11 @@ else()
 
     if(CMAKE_COMPILER_IS_GNUCC)
         # spurious warnings?
-        set(EXTRA_C_FLAGS "${EXTRA_C_FLAGS} -Wno-array-bounds -Wno-maybe-uninitialized")
+        set(EXTRA_C_FLAGS "${EXTRA_C_FLAGS} -Wno-array-bounds -Wno-attribute-alias -Wno-maybe-uninitialized")
     endif()
 
     if(CMAKE_COMPILER_IS_GNUCXX)
-        set(EXTRA_CXX_FLAGS "${EXTRA_CXX_FLAGS} -Wno-maybe-uninitialized")
+        set(EXTRA_CXX_FLAGS "${EXTRA_CXX_FLAGS} -Wno-maybe-uninitialized -Wno-attribute-alias")
         if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 5.0)
             set(EXTRA_CXX_FLAGS "${EXTRA_CXX_FLAGS} -fabi-version=0")
         endif ()
@@ -539,19 +540,19 @@ if(NOT WIN32)
 set(RAGEL_C_FLAGS "-Wno-unused")
 endif()
 
-set_source_files_properties(
-    ${CMAKE_BINARY_DIR}/src/parser/Parser.cpp
-    PROPERTIES
-        COMPILE_FLAGS "${RAGEL_C_FLAGS}")
+# set_source_files_properties(
+#     ${CMAKE_BINARY_DIR}/src/parser/Parser.cpp
+#     PROPERTIES
+#        COMPILE_FLAGS "${RAGEL_C_FLAGS}")
 
-ragelmaker(src/parser/Parser.rl)
+# ragelmaker(src/parser/Parser.rl)
 
-set_source_files_properties(
-    ${CMAKE_BINARY_DIR}/src/parser/control_verbs.cpp
-    PROPERTIES
-        COMPILE_FLAGS "${RAGEL_C_FLAGS}")
+# set_source_files_properties(
+#     ${CMAKE_BINARY_DIR}/src/parser/control_verbs.cpp
+#     PROPERTIES
+#         COMPILE_FLAGS "${RAGEL_C_FLAGS}")
 
-ragelmaker(src/parser/control_verbs.rl)
+# ragelmaker(src/parser/control_verbs.rl)
 
 SET(hs_HEADERS
     src/hs.h
@@ -1327,9 +1328,9 @@ if (BUILD_STATIC_AND_SHARED OR BUILD_SHARED_LIBS)
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
-if (BUILD_STATIC_LIBS)
-    add_dependencies(hs ragel_Parser)
-endif ()
+# if (BUILD_STATIC_LIBS)
+#     add_dependencies(hs ragel_Parser)
+# endif ()
 
 if (NOT BUILD_SHARED_LIBS)
     install(TARGETS hs DESTINATION ${CMAKE_INSTALL_LIBDIR})
@@ -1361,7 +1362,7 @@ if (BUILD_STATIC_AND_SHARED OR BUILD_SHARED_LIBS)
 
     add_library(hs_shared SHARED ${hs_shared_SRCS} hs.def)
 
-    add_dependencies(hs_shared ragel_Parser)
+#    add_dependencies(hs_shared ragel_Parser)
     set_target_properties(hs_shared PROPERTIES
         OUTPUT_NAME hs
         VERSION ${LIB_VERSION}
