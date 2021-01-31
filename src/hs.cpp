@@ -273,12 +273,6 @@ hs_compile_multi_int(const char *const *expressions, const unsigned *flags,
         *comp_error = const_cast<hs_compile_error_t *>(&hs_enomem);
         return HS_COMPILER_ERROR;
     }
-    catch (...) {
-        assert(!"Internal error, unexpected exception");
-        *db = nullptr;
-        *comp_error = const_cast<hs_compile_error_t *>(&hs_einternal);
-        return HS_COMPILER_ERROR;
-    }
 }
 
 } // namespace ue2
@@ -407,11 +401,6 @@ hs_error_t hs_expression_info_int(const char *expression, unsigned int flags,
     }
     catch (std::bad_alloc &) {
         *error = const_cast<hs_compile_error_t *>(&hs_enomem);
-        return HS_COMPILER_ERROR;
-    }
-    catch (...) {
-        assert(!"Internal error, unexpected exception");
-        *error = const_cast<hs_compile_error_t *>(&hs_einternal);
         return HS_COMPILER_ERROR;
     }
 
