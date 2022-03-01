@@ -176,7 +176,7 @@ public:
     vertex_descriptor() : p(nullptr), serial(0) {}
     explicit vertex_descriptor(vertex_node *pp) : p(pp), serial(pp->serial) {}
 
-    operator bool() const { return p; }
+    explicit operator bool() const { return p; }
     bool operator<(const vertex_descriptor b) const {
         if (p && b.p) {
             /* no vertices in the same graph can have the same serial */
@@ -215,7 +215,7 @@ public:
         assert(tup.second == (bool)tup.first);
     }
 
-    operator bool() const { return p; }
+    explicit operator bool() const { return p; }
     bool operator<(const edge_descriptor b) const {
         if (p && b.p) {
             /* no edges in the same graph can have the same serial */
